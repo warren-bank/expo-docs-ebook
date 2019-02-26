@@ -7,15 +7,41 @@ Scripts to download and convert the official _Expo SDK Documentation_ into ebook
 * [HTML on the web](https://docs.expo.io/)
 * [Markdown on GitHub](https://github.com/expo/expo/tree/master/docs)
 
-#### Installation:
+#### Installation (npm):
 
 ```bash
-mkdir 'expo-docs-ebook'
-cd    'expo-docs-ebook'
+mkdir 'workspace'
+cd    'workspace'
 
 npm init -y
-npm install --save "@warren-bank/expo-docs-ebook"
+npm install --save  "@warren-bank/expo-docs-ebook"
+mv     'node_modules/@warren-bank/expo-docs-ebook' .
+rm -rf 'node_modules'
+rm -f  package*
+
+cd 'expo-docs-ebook'
+npm install
 ```
+
+#### Installation (github):
+
+```bash
+mkdir 'workspace'
+cd    'workspace'
+
+wget --content-disposition --no-check-certificate 'https://github.com/warren-bank/expo-docs-ebook/archive/master.zip'
+unzip 'expo-docs-ebook-master.zip'
+rm -f 'expo-docs-ebook-master.zip'
+
+cd 'expo-docs-ebook-master'
+npm install
+```
+
+#### Installation notes:
+
+* [calibre](https://github.com/kovidgoyal/calibre/releases) is installed automatically on Windows as a portable executable in: `dep/`
+  * other platforms must ensure that the `ebook-convert` binary can be found in: `$PATH`
+* [GitBook](https://github.com/GitbookIO/gitbook) is not installed when the default global installation directory exists: `$HOME/.gitbook`
 
 #### Usage:
 
