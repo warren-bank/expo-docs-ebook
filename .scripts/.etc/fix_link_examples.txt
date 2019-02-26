@@ -1,0 +1,27 @@
+index.md (depth=1)
+  sdk/
+	=>	sdk/index.md
+  introduction/project-lifecycle/
+	=>	introduction/project-lifecycle.md
+
+index.md (depth=2)
+  up-and-running/
+	=>	up-and-running.md
+  ../
+	=>	../index.md
+  ../introduction/installation/
+	=> ../introduction/installation.md
+
+non-index (depth=2)
+  ../building-standalone-apps/
+	=>	building-standalone-apps.md
+  ../../
+    => ../index.md
+  ../../sdk/
+	=>	../sdk/index.md
+  ../../sdk/branch/
+	=>	../sdk/branch.md
+  ../../expokit/advanced-expokit-topics/#changing-the-deep-link-scheme
+	=>	../expokit/advanced-expokit-topics.md/#changing-the-deep-link-scheme
+  /static/images/host-your-app-debug.png
+	=>	../../images/host-your-app-debug.png

@@ -1,0 +1,9 @@
+https://toolchain.gitbook.com/ebook.html#cover
+
+notes:
+======
+* filename = "cover.jpg"
+* format   = .jpg
+* size     = 1800x2360
+* suggestions:
+  - should include the book title

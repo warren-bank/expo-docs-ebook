@@ -1,0 +1,217 @@
+--------------------------------------------------------------------------------
+
+error:
+======
+
+error:
+  "Template render error"
+  "expected variable end"
+
+related issues:
+===============
+https://github.com/GitbookIO/gitbook/issues/1198
+https://github.com/GitbookIO/gitbook/issues/1827
+https://github.com/mozilla/nunjucks/issues/604
+
+related docs:
+=============
+https://mozilla.github.io/nunjucks/api.html#customizing-syntax
+
+--------------------------------------------------------------------------------
+
+naive solution:
+===============
+
+file:
+  src/pages/react-native/javascript-environment.md
+line:
+  54
+old value:
+  * [JSX](https://reactjs.org/docs/jsx-in-depth.html): `<View style={{color: 'red'}} />`
+new value:
+  * [JSX](https://reactjs.org/docs/jsx-in-depth.html): `{% raw %}<View style={{color: 'red'}} />{% endraw %}>`
+
+result:
+=======
+fixed.
+pdf is generated without any other errors.
+
+--------------------------------------------------------------------------------
+
+smarter solution (attempt #1):
+==============================
+
+file:
+  book.json
+configs:
+  "tags": {
+    "blockStart": "<%",
+    "blockEnd": "%>",
+    "variableStart": "<$",
+    "variableEnd": "$>",
+    "commentStart": "<#",
+    "commentEnd": "#>"
+  }
+
+result:
+=======
+same error
+
+--------------------------------------------------------------------------------
+
+code trace:
+===========
+
+https://github.com/GitbookIO/gitbook/commits/master
+https://github.com/GitbookIO/gitbook/commit/b48f8472d35b27d549d7c9a5b61f77f6b78e1908
+  v3.2.3 (no corresponding tag, but v3.2.2 tag is nearly identical)
+https://github.com/GitbookIO/gitbook/tree/b48f8472d35b27d549d7c9a5b61f77f6b78e1908
+
+https://github.com/GitbookIO/gitbook/blob/b48f8472d35b27d549d7c9a5b61f77f6b78e1908/lib/parse/validateConfig.js#L15
+
+  var jsonschema = require('jsonschema');
+  var schema = require('../constants/configSchema');
+
+  function validateConfig(bookJson) {
+    var v = new jsonschema.Validator();
+    var result = v.validate(bookJson, schema, {
+      propertyName: 'config'
+    });
+
+    if (result.errors.length) throw new Error()
+
+    // Insert default values
+    var defaults = jsonSchemaDefaults(schema);
+    return mergeDefaults(bookJson, defaults);
+  }
+
+https://github.com/GitbookIO/gitbook/blob/b48f8472d35b27d549d7c9a5b61f77f6b78e1908/lib/constants/configSchema.js
+https://github.com/GitbookIO/gitbook/blob/b48f8472d35b27d549d7c9a5b61f77f6b78e1908/lib/utils/mergeDefaults.js
+
+https://github.com/tdegrunt/jsonschema
+
+debugging:
+==========
+
+file:
+  node_modules/gitbook/versions/3.2.3/lib/parse/validateConfig.js
+
+patch @ line 17 (before call to "jsonschema.Validator"):
+  console.log(JSON.stringify(bookJson, null, 2)); process.exit(0);
+result:
+  "bookJson" contains "tags"
+
+patch @ line 21 (after call to "jsonschema.Validator"):
+  console.log(JSON.stringify(bookJson, null, 2)); process.exit(0);
+result:
+  "bookJson" contains "tags"
+
+patch @ line 28 (before return):
+  console.log(JSON.stringify(mergeDefaults(bookJson, defaults), null, 2)); process.exit(0);
+result:
+  "mergeDefaults()" contains "tags"
+
+code trace:
+===========
+
+https://github.com/GitbookIO/gitbook/blob/b48f8472d35b27d549d7c9a5b61f77f6b78e1908/lib/parse/parseConfig.js
+
+  var validateConfig = require('./validateConfig');
+
+  function parseConfig(book) {
+    ...
+    values = validateConfig(values);
+
+    config = config.mergeValues(values);
+    return book.setConfig(config);
+  }
+
+debugging:
+==========
+
+file:
+  node_modules/gitbook/versions/3.2.3/lib/parse/parseConfig.js
+
+patch @ line 50 (after call to "mergeValues"):
+  console.log(JSON.stringify(config, null, 2)); process.exit(0);
+result:
+  "config" contains "tags"
+
+code trace:
+===========
+
+https://github.com/GitbookIO/gitbook/blob/b48f8472d35b27d549d7c9a5b61f77f6b78e1908/lib/models/templateEngine.js#L85
+
+    var env = new nunjucks.Environment(
+        loader,
+        {
+            // Escaping is done after by the asciidoc/markdown parser
+            autoescape: false,
+
+            // Syntax
+            tags: {
+                blockStart: '{%',
+                blockEnd: '%}',
+                variableStart: '{{',
+                variableEnd: '}}',
+                commentStart: '{###',
+                commentEnd: '###}'
+            }
+        }
+    );
+
+debugging:
+==========
+
+file:
+  node_modules/gitbook/versions/3.2.3/lib/models/templateEngine.js
+
+patch @ line 85:
+  old value:
+            tags: {
+                blockStart: '{%',
+                blockEnd: '%}',
+                variableStart: '{{',
+                variableEnd: '}}',
+                commentStart: '{###',
+                commentEnd: '###}'
+            }
+  new value:
+            "tags": {
+                "blockStart": "<%",
+                "blockEnd": "%>",
+                "variableStart": "<$",
+                "variableEnd": "$>",
+                "commentStart": "<#",
+                "commentEnd": "#>"
+            }
+result:
+  progress.
+  pdf is generated, but only contains 1 page of template w/ uninterpolated variables
+
+patch @ line 82:
+  old value:
+            autoescape: false,
+  new value:
+            autoescape: true,
+result:
+  same error
+
+--------------------------------------------------------------------------------
+
+conclusions:
+============
+* I couldn't find a smart solution to solve this issue
+  - template tag delimiters are hard-coded
+  - these specific template tags are used by whatever templates are used internally by gitbook by default
+    * changing the delimiters causes the templates to render incorrectly
+
+solution:
+=========
+* update "parser.sh" script to automatically patch markdown file(s) that contain jsx codeblocks
+  - wrap codeblocks in:
+      {% raw %}...{% endraw %}
+* this solution is very brittle,
+  and may need to be adjusted over time as markdown file contents change.
+
+--------------------------------------------------------------------------------

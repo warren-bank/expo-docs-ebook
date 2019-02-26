@@ -1,0 +1,28 @@
+{
+  "name": "@warren-bank/expo-docs-ebook",
+  "version": "1.0.0",
+  "main": "",
+  "description": "Scripts to download and convert the official 'Expo SDK Documentation' into ebook formats.",
+  "scripts": {
+    "gitbook:clean": "bash ./.scripts/clean.sh",
+    "gitbook:pdf":   "bash ./.scripts/pdf.sh",
+    "gitbook:epub":  "bash ./.scripts/epub.sh",
+    "gitbook:mobi":  "bash ./.scripts/mobi.sh",
+    "gitbook:all":   "npm run gitbook:clean && npm run gitbook:pdf && npm run gitbook:epub && npm run gitbook:mobi"
+  },
+  "license": "GPL-2.0",
+  "devDependencies": {
+    "@warren-bank/node-github-downloader-cli": "^1.0.0",
+    "gitbook-cli": "^2.3.2",
+    "svgexport": "^0.3.2"
+  },
+  "author": {
+    "name":  "Warren R. Bank",
+    "email": "warren.r.bank@gmail.com",
+    "url":   "https://github.com/warren-bank"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/warren-bank/expo-docs-ebook"
+  }
+}
