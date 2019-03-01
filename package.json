@@ -1,6 +1,6 @@
 {
   "name": "@warren-bank/expo-docs-ebook",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "",
   "description": "Scripts to download and convert the official 'Expo SDK Documentation' into ebook formats.",
   "scripts": {
@@ -17,9 +17,9 @@
     "svgexport": "^0.3.2"
   },
   "author": {
-    "name":  "Warren R. Bank",
+    "name": "Warren R. Bank",
     "email": "warren.r.bank@gmail.com",
-    "url":   "https://github.com/warren-bank"
+    "url": "https://github.com/warren-bank"
   },
   "repository": {
     "type": "git",

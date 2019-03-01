@@ -5,7 +5,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export ebook_version='v32.0.0'
 export ebook_commit='master'
 
-export DIR_EBOOK=$(realpath "${DIR}/..")
+export DIR_EBOOK=$(dirname "$DIR")
 
 export DIR_EBOOK_DEP="${DIR_EBOOK}/dep"
 export DIR_EBOOK_SRC="${DIR_EBOOK}/src"

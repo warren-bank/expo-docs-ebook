@@ -209,9 +209,10 @@ conclusions:
 solution:
 =========
 * update "parser.sh" script to automatically patch markdown file(s) that contain jsx codeblocks
-  - wrap codeblocks in:
+  - wrap codeblock delimiters in:
       {% raw %}...{% endraw %}
-* this solution is very brittle,
-  and may need to be adjusted over time as markdown file contents change.
+  - these delimiters include the character sequences:
+      '{{'
+      '}}'
 
 --------------------------------------------------------------------------------
