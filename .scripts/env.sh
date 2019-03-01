@@ -9,6 +9,7 @@ export DIR_EBOOK=$(dirname "$DIR")
 
 export DIR_EBOOK_DEP="${DIR_EBOOK}/dep"
 export DIR_EBOOK_SRC="${DIR_EBOOK}/src"
+export DIR_EBOOK_LOG="${DIR_EBOOK}/src/.log"
 export DIR_EBOOK_DIST="${DIR_EBOOK}/dist"
 
 [ -d "$DIR_EBOOK_DIST" ] || mkdir "$DIR_EBOOK_DIST"

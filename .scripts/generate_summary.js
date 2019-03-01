@@ -2,6 +2,7 @@ const filepath_raw_navigation_array  = process.argv[2]
 const filepath_navigation_sections   = process.argv[3]
 const filepath_navigation_data       = process.argv[4]
 const filepath_navigation_order      = process.argv[5]
+const filepath_log_directory         = process.argv[6]
 
 const navdata = {
   raw_arr:  require(filepath_raw_navigation_array),
@@ -49,13 +50,6 @@ const process_raw_arr = function() {
       dir_obj.posts.push({name: title, href})
     }
   })
-}
-
-const update_navigation_data = function() {
-  const fs  = require('fs')
-  const txt = 'module.exports = ' + JSON.stringify(navlinks, null, 2)
-
-  fs.writeFileSync(filepath_navigation_data, txt)
 }
 
 // shape of output:
@@ -210,11 +204,64 @@ const output_sorted_navigational_data_in_markdown = function() {
   })
 }
 
+const save_log_data = function() {
+  const fs       = require('fs')
+  const basepath = filepath_log_directory + '/navigation_data.'
+
+  fs.writeFileSync(
+    (basepath + '2-dir-map.json'),
+    (
+      `// the following data was extracted from:\n//   https://github.com/expo/expo/raw/master/docs/common/navigation-data.js\n\n` +
+      `// its purpose is to map the name of each directory (as it exists in the filesystem) to a descriptive title\n\n` +
+      JSON.stringify(navdata.dir_map, null, 2)
+    )
+  )
+
+  fs.writeFileSync(
+    (basepath + '3-sections.json'),
+    (
+      `// the following data was extracted from:\n//   https://github.com/expo/expo/raw/master/docs/common/navigation.js\n\n` +
+      `// its purpose is to map the descriptive title of each directory to a sorted list of page titles\n\n` +
+      JSON.stringify(navdata.sections, null, 2)
+    )
+  )
+
+  fs.writeFileSync(
+    (basepath + '4-ordered-lists.json'),
+    (
+      `// the following data was obtained from:\n//   https://github.com/expo/expo/raw/master/docs/common/sidebar-navigation-order.js\n\n` +
+      `// * "3-sections.json" includes a subset of this data\n` +
+      `// * 'ROOT' is an ordered list of the descriptive directory titles\n` +
+      `// * 'GROUPS' is a hash table that maps each descriptive directory title to a higher-order grouping\n` +
+      `//   - each grouping may include one-or-more directories\n\n` +
+      JSON.stringify(navorder, null, 2)
+    )
+  )
+
+  fs.writeFileSync(
+    (basepath + '5-navlinks.json'),
+    (
+      `// the following data was derived from:\n//   "1-flat-list.js"\n//   "2-dir-map.json"\n\n` +
+      `// * organizes pages by common directory\n` +
+      `// * pages are unsorted\n` +
+      `// * directories are identified by descriptive title\n\n` +
+      JSON.stringify(navlinks, null, 2)
+    )
+  )
+
+  fs.writeFileSync(
+    (basepath + '6-navlinks-sorted.json'),
+    (
+      `// the following data was derived from:\n//   "5-navlinks.json"\n//   "3-sections.json"\n//   "4-ordered-lists.json"\n\n` +
+      `// * organizes directories by common grouping\n` +
+      `// * directories are sorted\n` +
+      `// * pages are sorted\n\n` +
+      JSON.stringify(navlinks_sorted, null, 2)
+    )
+  )
+}
+
 process_raw_arr()
-update_navigation_data()
 sort_navigation_data()
-
-//  console.log(JSON.stringify(navlinks_sorted, null, 2))
-//  process.exit(0)
-
 output_sorted_navigational_data_in_markdown()
+save_log_data()

@@ -63,7 +63,7 @@ fix_title_in_file() {
 fix_all_titles() {
   echo 'fixing: page titles'
 
-  local navigation_data="${DIR_EBOOK_SRC}/.log/navigation_data.js"
+  local navigation_data="${DIR_EBOOK_LOG}/navigation_data.1-flat-list.js"
 
   echo 'module.exports = [' >"$navigation_data"
 

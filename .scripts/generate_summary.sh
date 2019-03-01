@@ -101,8 +101,9 @@ extract_section_data    "${DIR_EBOOK_DEP}/generate_summary/navigation.js"
 extract_navigation_data "${DIR_EBOOK_DEP}/generate_summary/navigation-data.js"
 
 node "${DIR}/generate_summary.js"                                  \
-  "${DIR_EBOOK_SRC}/.log/navigation_data.js"                       \
+  "${DIR_EBOOK_LOG}/navigation_data.1-flat-list.js"                \
   "${DIR_EBOOK_DEP}/generate_summary/navigation.js"                \
   "${DIR_EBOOK_DEP}/generate_summary/navigation-data.js"           \
   "${DIR_EBOOK_DEP}/generate_summary/sidebar-navigation-order.js"  \
+  "${DIR_EBOOK_LOG}"                                               \
   >"${DIR}/assets/summary.md"

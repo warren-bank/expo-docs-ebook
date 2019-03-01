@@ -181,6 +181,6 @@ fix_all_links() {
 
 # ------------------------------------------------------------------------------
 
-print_all_links >"${DIR_EBOOK_SRC}/.log/links.1-pre-fix.txt"
+print_all_links >"${DIR_EBOOK_LOG}/links.1-pre-fix.txt"
 fix_all_links
-print_all_links >"${DIR_EBOOK_SRC}/.log/links.2-post-fix.txt"
+print_all_links >"${DIR_EBOOK_LOG}/links.2-post-fix.txt"
