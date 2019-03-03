@@ -1,6 +1,6 @@
 {
   "name": "@warren-bank/expo-docs-ebook",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "",
   "description": "Scripts to download and convert the official 'Expo SDK Documentation' into ebook formats.",
   "scripts": {

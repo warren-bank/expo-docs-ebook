@@ -3,20 +3,13 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${DIR}/../env.sh"
 
-shopt -s globstar
 set -e
 
 # ------------------------------------------------------------------------------
 
-escape_jsx_in_file() {
+patch_file() {
   local filepath="$1"
-
-  local regexp_codeblock='(\{\{|\}\})'
-  local replac_codeblock='\{\% raw \%\}\1\{\% endraw \%\}'
-
-  local pe=''
-  pe="$pe"' my $pattern_codeblock = qr/'$regexp_codeblock'/;'
-  pe="$pe"' s/$pattern_codeblock/'$replac_codeblock'/g;'
+  local pe="$2"
 
   perl -i -pe "$pe" "$filepath"
 
@@ -26,10 +19,17 @@ escape_jsx_in_file() {
 escape_all_jsx_codeblocks() {
   echo 'escaping: JSX code blocks'
 
-  for i in "${DIR_EBOOK_SRC}/pages"/**/*.md; do
-    # echo "$i"
-    escape_jsx_in_file "$i"
-  done
+  local filepath
+  local s
+  local r
+  local pe
+  local sq="'"
+
+  filepath="${DIR_EBOOK_SRC}/pages/react-native/javascript-environment.md"
+  s='(`)(\<View style=\{\{color: '$sq'red'$sq'\}\} \/\>)(`)'
+  r='\1\{\% raw \%\}\2\{\% endraw \%\}\3'
+  pe="s/${s}/${r}/g"
+  patch_file "$filepath" "$pe"
 }
 
 # ------------------------------------------------------------------------------
